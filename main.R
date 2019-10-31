@@ -55,6 +55,7 @@ calcularIMC = function(df){
   df["Media"] <- NULL
 }
 
+
 df1 <- data.frame(
   
   MEDIA = formatC(mean(df$IMC), digits = 3),
@@ -63,13 +64,14 @@ df1 <- data.frame(
   
   DECIL4 = formatC(quantile(df$IMC, prob = seq(0, 1, length = 11), type = 5)[4], digits = 3),
   
-  DESVIO_PADRAO = formatC(sd(df$IMC), digits = 3), 
-  
-  stringsAsFactors = FALSE)
+  DESVIO_PADRAO = formatC(sd(df$IMC), digits = 3))
 
 formattable(df1)
-calcularMedia = function(){
-  
+
+
+gerarBoxplot = function(){
+  print("Gráfico em Boxplot")
+  print(boxplot(df$IMC))
 }
 
 
