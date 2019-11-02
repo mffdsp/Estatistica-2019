@@ -5,7 +5,8 @@ library(plyr)
 INICIAR = function(){
   
   df <- data.frame(
-    
+  
+    ID = 1:30,
     #NOME
     NOME = df0$NOME, 
     
@@ -28,6 +29,7 @@ INICIAR = function(){
   calcularIMC(df)
   
   formattable(df, list(
+    ID = color_tile("white", "orange"),
     IMC = formatter("span", 
                     style = ~ style(color = ifelse(IMC >= 18.5 & IMC < 24.99, "green", "red"))),
     ESCOLARIDADE = formatter("span", style = x ~ ifelse(x == "A", 
@@ -40,7 +42,7 @@ INICIAR = function(){
 
 setTable = function(){
   
-  df0 <- read.table("input.csv", header=TRUE, sep=",")
+  df0 <- read.table("DATA.txt", header=TRUE, sep=",")
   
 }
 
@@ -62,25 +64,70 @@ df1 <- data.frame(
   
   DECIL4 = formatC(quantile(df$IMC, prob = seq(0, 1, length = 11), type = 5)[5], digits = 3),
   
-  DESVIO_PADRAO = formatC(sd(df$IMC), digits = 3))
+  DESVIO_PADRAO = formatC(sd(df$IMC), digits = 3),
+  
+  MODA = getmode(df$IMC)
+  
+  )
 
 formattable(df1)
 
+df2 <- data.frame(
+  
+  MEDIA = formatC(mean(df$PESO), digits = 3),
+  
+  MEDIANA = formatC(median(df$PESO), digits = 3),
+  
+  DECIL4 = formatC(quantile(df$PESO, prob = seq(0, 1, length = 11), type = 5)[5], digits = 3),
+  
+  DESVIO_PADRAO = formatC(sd(df$PESO), digits = 3),
+  
+  MODA = getmode(df$PESO)
+  
+)
+
+
+
+getmode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
 
 formattable(ImcFrequency, list(
-  area(col = c(Freq)) ~ normalize_bar("pink", 0.6)
+  
+  area(col = c(Frequencia)) ~ normalize_bar("grey", 0.2)
+  
+ 
 ))
+
 
 gerarBoxplot = function(){
   print("Gráfico em Boxplot")
   print(boxplot(df$IMC))
 }
 
+
+# Pie Chart with Percentages
+slices <- c(1,1,1,7,2,2,16)
+lbls <- c("Infantil Incompleto", "Doutorado Completo", "Fundamental Incompleto", "Médio Completo", "Médio Incompleto", "Superior Completo", "Superior Incompleto")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels
+lbls <- paste(lbls,"%",sep="") # ad % to labels
+pie(slices,labels = lbls, col=rainbow(length(lbls)),
+    main="Gráfico de Setores")
+
+
 gerarHistograma = function(){
-  hist(df1, main = "Histograma dos dados", xlab = "Dados", ylab="Frequência")
+ a = hist(df$IMC, main = "Histograma dos dados", xlab = "Dados", ylab="Frequência")
 }
+oi <- data.frame(
+  valores = df$ALTURA
+)
+h1 <- ggplot(oi, aes(valores)) + geom_histogram() +
+  xlab("Altura(m)") + ylab("Frequencia")
+
 
 receberFrequencias = function(){
-  ImcFrequency <- data.frame( FREQUENCIA <-table(df$IMC))
+  ImcFrequency <- data.frame( FREQUENCIA <-table(df$ESCOLARIDADE))
 }
 INICIAR()
